@@ -1,11 +1,34 @@
 import { Schema, model } from "mongoose"
 const blogSchema = new Schema({
-    title: String,
-    author: String,
-    body: String,
-    tags: String,
-    createdAt: Date,
-    updatedAt: Date
+    title: {
+        type: String,
+        required: true
+    },
+    author: {
+        type: String,
+        required: true,
+        immutable: true
+    },
+    content: {
+        type: String,
+        required: true
+    },
+    tags: {
+        type: Array<String>,
+        required: true,
+        default: () => []
+    },
+    createdAt: {
+        type: Date,
+        required: true,
+        default: () => Date.now(),
+        immutable: true
+    },
+    updatedAt: {
+        type: Date,
+        required: true,
+        default: () => Date.now()
+    }
 })
 
 const Blog = model('Blog', blogSchema)
