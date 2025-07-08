@@ -4,7 +4,10 @@
   "description": "backend api for a blog with posts stored in a json file in the filesystem, including https verification for users",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "start": "npm run build && node .",
+    "dev": "tsx watch ./src/app.ts"
   },
   "repository": {
     "type": "git",
@@ -13,6 +16,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type" : "module",
   "bugs": {
     "url": "https://github.com/sidesbutgithub/personalBlog/issues"
   },
