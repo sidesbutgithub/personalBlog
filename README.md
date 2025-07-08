@@ -1,3 +1,4 @@
-#personalBlog
+# personalBlog
 
-a web app for a personal blog with posts stroed in either the file system or a remote db (to be decided)
+backend api for a blog with posts stored in a json file in the filesystem, including https verification for users
+

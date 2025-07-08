@@ -1,0 +1,31 @@
+{
+  "name": "personalblog",
+  "version": "1.0.0",
+  "description": "backend api for a blog with posts stored in a json file in the filesystem, including https verification for users",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sidesbutgithub/personalBlog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sidesbutgithub/personalBlog/issues"
+  },
+  "homepage": "https://github.com/sidesbutgithub/personalBlog#readme",
+  "dependencies": {
+    "dotenv": "^17.1.0",
+    "express": "^5.1.0",
+    "mongodb": "^6.17.0",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.10",
+    "tsx": "^4.20.3"
+  }
+}
