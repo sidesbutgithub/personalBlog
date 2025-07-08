@@ -16,7 +16,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type" : "module",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/sidesbutgithub/personalBlog/issues"
   },
@@ -24,7 +24,7 @@
   "dependencies": {
     "dotenv": "^17.1.0",
     "express": "^5.1.0",
-    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.2",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
