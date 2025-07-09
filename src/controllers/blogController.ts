@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Blog } from "../models/blogModel.js";
+import { User } from "../models/userModel.js";
 
 const getBlog = async (req: Request, res: Response) => {
     try{
@@ -18,9 +19,16 @@ const getBlog = async (req: Request, res: Response) => {
 
 const postBlog = async (req: Request, res: Response) => {
     try{
-        const article = new Blog(req.body);
-        await article.save()
-        res.status(201).json()
+        const {title, content, tags} = req.body;
+        const author = await User.findById(req.user, 'username').exec();
+        const article = new Blog({
+            author: author,
+            title: title,
+            content: content,
+            tags: tags
+        });
+        await article.save();
+        res.status(201).json();
     }
     catch (e){
         res.status(400).send(e);

@@ -23,11 +23,6 @@ const blogSchema = new Schema({
         required: true,
         default: () => Date.now(),
         immutable: true
-    },
-    updatedAt: {
-        type: Date,
-        required: true,
-        default: () => Date.now()
     }
 })
 

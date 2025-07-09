@@ -7,11 +7,9 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import { Strategy } from "passport-local";
-
-import { blogRouter } from "./routers/api.js";
-//import { userRouter } from "./routers/auth.js";
-import { verifyUser, generatePasswordHash } from "./utils/auth.util.js";
 import { User } from "./models/userModel.js";
+import { blogRouter } from "./routers/api.js";
+import { verifyUser, generatePasswordHash } from "./utils/auth.util.js";
 
 dotenv.config();
 const port = process.env.PORT || 3000;
@@ -78,10 +76,6 @@ app.use(passport.session());
 
 app.use("/api", blogRouter)
 
-//app.use("/auth", userRouter)
-
-
-
 app.get("/login", passport.authenticate('local'), (req, res) => {
     res.status(200).send("successfully logged in");
 });
@@ -97,7 +91,7 @@ app.get("/register", async (req, res, next) => {
             salt: salt
         });
         await newUser.save();
-        res.status(200).send("successfully registered in")
+        res.redirect('/login')
     }
     catch (e){
         res.status(400).send(e);
