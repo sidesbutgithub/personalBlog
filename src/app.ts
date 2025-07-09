@@ -3,13 +3,15 @@
 import express from "express"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
-import { error } from "console";
-import bodyParser from "body-parser";
-import { blogRouter } from "./routers/blog.js";
-import { userRouter } from "./routers/user.js";
-import { Blog } from "./models/blogModel.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import passport from "passport";
+import { Strategy } from "passport-local";
 
-const app = express();
+import { blogRouter } from "./routers/api.js";
+//import { userRouter } from "./routers/auth.js";
+import { verifyUser, generatePasswordHash } from "./utils/auth.util.js";
+import { User } from "./models/userModel.js";
 
 dotenv.config();
 const port = process.env.PORT || 3000;
@@ -18,30 +20,97 @@ const uri = process.env.MDB_URI;
 if (uri === undefined){
     throw new Error("db uri not provided");
 }
+const mySecret = process.env.SECRET;
+if (mySecret === undefined){
+    throw new Error("server secret not provided");
+}
+
+
+
+const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json());
+
+
 
 mongoose
     .connect(uri)
     .then(() => console.log("database connection successful"))
     .catch((e) => console.log(e));
 
-const article = new Blog({
-  title: 'Awesome Post!',
-  author: 'awesome-post',
-  content: 'This is the best post ever',
-  tags: ['featured', 'announcement']
+
+
+app.use(session({
+  secret: mySecret,
+  saveUninitialized: false,
+  resave: false,
+  store: MongoStore.create({client: mongoose.connection.getClient(), collectionName: "sessions"}),
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 //one day in ms
+  }
+}));
+
+
+passport.use(new Strategy(verifyUser))
+
+
+passport.serializeUser(function(user, done) {
+    //@ts-ignore
+    done(null, user.id);
 });
-// Insert the article in our MongoDB database
-await article.save();
 
-await Blog.deleteMany({ author: "awesome-post" })
+passport.deserializeUser(function(userId, done) {
+    User.findById(userId)
+    .then((user)=>{
+        done(null, user)
+    })
+    .catch(e=>done(e))
+});
 
-app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(bodyParser.json());
 
-app.use("/blog", blogRouter)
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use("/user", userRouter)
+
+
+app.use("/api", blogRouter)
+
+//app.use("/auth", userRouter)
+
+
+
+app.get("/login", passport.authenticate('local'), (req, res) => {
+    res.status(200).send("successfully logged in");
+});
+
+app.get("/register", async (req, res, next) => {
+    const saltHash = await generatePasswordHash(req.body.password);
+    console.log(saltHash)
+    const { salt, hash } = saltHash;
+    try{
+        const newUser = new User({
+            username: req.body.username,
+            hash: hash,
+            salt: salt
+        });
+        await newUser.save();
+        res.status(200).send("successfully registered in")
+    }
+    catch (e){
+        res.status(400).send(e);
+    }
+})
+
+app.get("/logout", (req, res, next) => {
+    req.logout((e) => {
+        res.status(400).send(e)
+    });
+    res.status(200).send("successfully logged out");
+});
+
 
 app.get("/", (req, res) => {
     res.send("home test ok")
