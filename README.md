@@ -80,6 +80,7 @@ Request bodies for authentication related calls (login & register) should be for
 ```
 {
     "username":"<username of user to be logged in or registered>",
+
     "password":"<password of user to be logged in or registered>"
 }
 ```
