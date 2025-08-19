@@ -9,6 +9,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import { User } from "./models/userModel.js";
 import { blogRouter } from "./routers/api.js";
+import { checkUser } from "./middleware/authMiddleware.js"
 import { verifyUser, generatePasswordHash } from "./utils/auth.util.js";
 
 dotenv.config();
@@ -80,7 +81,7 @@ app.get("/login", passport.authenticate('local'), (req, res) => {
     res.status(200).send("successfully logged in");
 });
 
-app.get("/register", async (req, res, next) => {
+app.get("/register", checkUser, async (req, res, next) => {
     const saltHash = await generatePasswordHash(req.body.password);
     console.log(saltHash)
     const { salt, hash } = saltHash;
