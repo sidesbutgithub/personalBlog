@@ -31,7 +31,11 @@ async function checkUser(req: Request, res:Response, next: Function){
         if (!user){
             next(req, res);
         }
-        res.status(403).send("user with that username already registered")
+        else{
+            res.status(403).send("user with that username already registered");
+        }
+        
+        return
     })
     .catch((e) => {
         res.status(500).send()
